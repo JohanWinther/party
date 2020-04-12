@@ -1,0 +1,37 @@
+{
+  "name": "party",
+  "version": "0.0.0",
+  "description": "Open source local party game",
+  "main": "build/server.js",
+  "dependencies": {
+    "ws": "^7.2.3"
+  },
+  "devDependencies": {
+    "@types/node": "^13.11.1",
+    "@typescript-eslint/eslint-plugin": "^2.27.0",
+    "@typescript-eslint/parser": "^2.27.0",
+    "eslint": "^6.8.0",
+    "tsc-watch": "^4.2.3",
+    "typescript": "^3.8.3"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "wsl rm -rf build/*",
+    "start": "tsc-watch --onSuccess \"node build/server.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JohanWinther/party.git"
+  },
+  "author": {
+    "name": "Johan Winther",
+    "email": "johan.winther@outlook.com",
+    "url": "https://github.com/JohanWinther"
+  },
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/JohanWinther/party/issues"
+  },
+  "homepage": "https://github.com/JohanWinther/party#readme"
+}
