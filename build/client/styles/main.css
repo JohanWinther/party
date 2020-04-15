@@ -1,5 +1,6 @@
 body
 {
+    user-select: none;
     margin: 0;
     padding: 5em;
     text-align: center;
@@ -15,13 +16,21 @@ ol
     padding-left: 0;
 }
 
-a
+nav
+{
+    font-size: 3em;
+    font-family: Arial;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+nav li
 {
     text-decoration: none;
     color: unset;
 }
 
-a:focus
+nav li:focus
 {
     outline: none;
     background-color: white;

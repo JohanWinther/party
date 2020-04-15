@@ -24,21 +24,32 @@ document.addEventListener('DOMContentLoaded', () => {
     getGames().then(games => {
         let listEl = document.getElementById("games");
         games.forEach(game => {
-            listEl.innerHTML += `<li><a href="${game.path}">${game.data.name}</a></li>`;
+            listEl.innerHTML += `<li tabindex="0" data-href="${game.path}">${game.data.name}</li>`;
         });
     }).then(() => {
 
-        var Anchors = document.getElementsByTagName("a");
+        var Anchors = document.getElementById("games").children;
     
         [...Anchors].forEach(anchor => {
-            anchor.addEventListener("click", event => {
-                event.preventDefault();
-                document.body.classList.add('fadeOut');
-                setTimeout(() => {
-                    window.location = anchor.href;
-                }, 1000);
-                return false;
-            }, false);
+            anchor.addEventListener("touchend", startGame, false);
+            anchor.addEventListener("click", startGame, false);
+            anchor.addEventListener("keypress", startGame, false);
         });
     });
 });
+
+function startGame(event) {
+    event.preventDefault();
+    let target = event.target;
+    target.focus();
+
+    if (event.keyCode && ![13,32].includes(event.keyCode)) {
+        return false;
+    }
+
+    document.body.classList.add('fadeOut');
+    setTimeout(() => {
+        window.location = target.dataset.href;
+    }, 1000);
+    return false;
+}
