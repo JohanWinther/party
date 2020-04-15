@@ -1,0 +1,16 @@
+{
+    "name": "Don't Overshoot!",
+    "author": {
+        "name": "Johan Winther",
+        "url": "https://github.com/JohanWinther"
+    },
+    "timespan": [5,10],
+    "description": "Say the second highest number to win.",
+    "numOfPlayers": {
+        "min": 1,
+        "max": 8
+    },
+    "parentalAdvisory": false,
+    "audience": false,
+    "entry": "game.js"
+}

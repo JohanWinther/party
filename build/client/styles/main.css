@@ -1,0 +1,34 @@
+body
+{
+    margin: 0;
+    padding: 5em;
+    text-align: center;
+    background-color: black;
+    color: white;
+    transition: opacity 1s ease-in-out;
+    opacity: 1;
+}
+
+ol
+{
+    list-style: none;
+    padding-left: 0;
+}
+
+a
+{
+    text-decoration: none;
+    color: unset;
+}
+
+a:focus
+{
+    outline: none;
+    background-color: white;
+    color: black;
+}
+
+.fadeOut
+{
+    opacity: 0;
+}

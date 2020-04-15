@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "target": "ES2017",
+        "module": "es6",
+        "esModuleInterop": true,
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "sourceMap": false,
+        "outDir": "../../build/release/public",
+        "rootDir": "."
+    },
+    "include": [
+        "**/*.ts", "scripts/bundle.js"
+    ],
+    "exclude": [
+        "**/*.spec.ts"
+    ]
+}

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Don't Overshoot</title>
+    <script src="game.js"></script>
+    <style>
+        img {
+            animation: createBox 5s infinite alternate;
+            width: auto;
+            height: auto;
+        }
+
+        @keyframes createBox {
+            from {
+                transform: scale(0);
+            }
+
+            to {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body style="background-color: black;">
+    <img src="assets/numbers.jpg" style="" />
+    <div></div>
+</body>
