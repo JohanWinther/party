@@ -15,7 +15,7 @@ function findGames() {
                 .map(dirent => `/games/${dirent.name}/`)
         )
     } else {
-        games = []
+        games = [];
     }
     return games
 }
