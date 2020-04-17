@@ -38,7 +38,7 @@ const getServerConfig = env => {
         },
         output: {
             filename: 'index.js',
-            path: path.resolve(__dirname, 'build', env.releaseFolder),
+            path: path.resolve(__dirname, 'build', env.buildFolder),
         },
         plugins: [
             new ForkTsCheckerWebpackPlugin(),
@@ -84,7 +84,7 @@ const getClientConfig = env => {
         },
         output: {
             filename: 'bundle.js',
-            path: path.resolve(__dirname, 'build', env.releaseFolder, 'client', 'scripts'),
+            path: path.resolve(__dirname, 'build', env.buildFolder, 'client', 'scripts'),
         },
         plugins: [
             new ForkTsCheckerWebpackPlugin(),
@@ -103,7 +103,7 @@ module.exports = env => {
     // Environment
     env.isProduction = env.NODE_ENV === 'production';
     env.devtool = env.isProduction ? false : 'inline-source-map';
-    env.releaseFolder = env.isProduction ? 'release' : 'development';
+    env.buildFolder = env.isProduction ? 'release' : 'development';
     
     return [
         getServerConfig(env),
