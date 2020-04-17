@@ -52,7 +52,7 @@
   "homepage": "https://github.com/JohanWinther/party#readme",
   "husky": {
     "hooks": {
-      "pre-push": "git diff HEAD --quiet && npm build && npm test",
+      "pre-push": "git diff HEAD --quiet && npm build && npm test"
     }
   }
 }
