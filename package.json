@@ -28,10 +28,11 @@
   },
   "scripts": {
     "build": "webpack --env.NODE_ENV=production --config webpack.config.js",
+    "build:dev": "webpack --env.NODE_ENV=development --config webpack.config.js",
+    "build:dev-watch": "webpack --env.NODE_ENV=development --watch --config webpack.config.js",
     "start": "node .",
     "nodemon": "nodemon . --watch build/development/*",
-    "watch": "webpack --env.NODE_ENV=development --watch --config webpack.config.js",
-    "dev": "npm-run-all -p nodemon watch",
+    "watch": "npm-run-all -p nodemon build:dev-watch",
     "test": "jest"
   },
   "repository": {
