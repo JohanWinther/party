@@ -3,4 +3,7 @@ module.exports = {
   displayName: 'client',
   preset: 'ts-jest',
   testEnvironment: "jsdom",
+  roots: [
+    "<rootDir>/source/client"
+  ],
 };
