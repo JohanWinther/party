@@ -49,7 +49,7 @@ const getServerConfig = env => {
 const getClientConfig = env => {
     return {
         target: "web",
-        entry: './source/client/scripts/index.ts',
+        entry: './source/client/index.ts',
         mode: env.NODE_ENV,
         devtool: env.devtool,
         module: {
