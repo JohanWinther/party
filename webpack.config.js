@@ -42,12 +42,6 @@ const getServerConfig = env => {
         },
         plugins: [
             new ForkTsCheckerWebpackPlugin(),
-            new CopyPlugin([
-                {
-                    from: 'source',
-                    ignore: ['*.ts'],
-                },
-            ]),
         ]
     };
 };
@@ -84,13 +78,13 @@ const getClientConfig = env => {
         },
         output: {
             filename: 'bundle.js',
-            path: path.resolve(__dirname, 'build', env.buildFolder, 'client', 'scripts'),
+            path: path.resolve(__dirname, 'build', env.buildFolder, 'client'),
         },
         plugins: [
             new ForkTsCheckerWebpackPlugin(),
             new CopyPlugin([
                 {
-                    from: 'source',
+                    from: path.join(__dirname, 'source', 'client'),
                     ignore: ['*.ts'],
                 },
             ]),
