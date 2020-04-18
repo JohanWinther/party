@@ -8,7 +8,10 @@ module.exports = {
   ],
   globals: {
     'ts-jest': {
-      tsConfig: '<rootDir>/source/client/tsconfig.json'
+      tsConfig: {
+        "esModuleInterop": true,
+        "module": "ES6",
+      }
     }
   }
 };
