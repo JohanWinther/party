@@ -6,4 +6,9 @@ module.exports = {
   roots: [
     "<rootDir>/source/client"
   ],
+  globals: {
+    'ts-jest': {
+      tsConfig: '<rootDir>/source/client/tsconfig.json'
+    }
+  }
 };

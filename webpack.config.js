@@ -22,11 +22,11 @@ const getServerConfig = env => {
                             transpileOnly: true, // type checking used in plugin
                             experimentalWatchApi: true,
                             compilerOptions: {
-                                "target": "esnext",
-                                "module": "CommonJS",
-                                "removeComments": env.isProduction,
-                                "preserveConstEnums": !env.isProduction,
-                                "sourceMap": !env.isProduction
+                                target: "esnext",
+                                module: "CommonJS",
+                                removeComments: env.isProduction,
+                                preserveConstEnums: !env.isProduction,
+                                sourceMap: !env.isProduction
                             }
                         }
                     }
@@ -62,11 +62,11 @@ const getClientConfig = env => {
                             transpileOnly: true, // type checking used in plugin
                             experimentalWatchApi: true,
                             compilerOptions: {
-                                "target": "ES2019",
-                                "module": "ES6",
-                                "removeComments": env.isProduction,
-                                "preserveConstEnums": !env.isProduction,
-                                "sourceMap": !env.isProduction
+                                target: "ES2019",
+                                module: "ES6",
+                                removeComments: env.isProduction,
+                                preserveConstEnums: !env.isProduction,
+                                sourceMap: !env.isProduction
                             }
                         }
                     }
@@ -85,7 +85,7 @@ const getClientConfig = env => {
             new CopyPlugin([
                 {
                     from: path.join(__dirname, 'source', 'client'),
-                    ignore: ['*.ts'],
+                    ignore: ['*.ts', 'tsconfig.json'],
                 },
             ]),
         ]
