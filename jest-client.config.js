@@ -6,12 +6,4 @@ module.exports = {
   roots: [
     "<rootDir>/source/client"
   ],
-  globals: {
-    'ts-jest': {
-      tsConfig: {
-        "esModuleInterop": true,
-        "module": "ES6",
-      }
-    }
-  }
 };
