@@ -4,4 +4,11 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: "jsdom",
   rootDir: 'source/client',
+  globals: {
+    'ts-jest': {
+      tsConfig: {
+        module: "ES6"
+      }
+    }
+  }
 };

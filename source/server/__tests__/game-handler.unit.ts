@@ -1,3 +1,5 @@
+jest.mock('fs');
+
 import fs, { Dirent } from 'fs';
 import gameHandler from '../game-handler';
 
