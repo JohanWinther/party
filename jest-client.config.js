@@ -2,7 +2,7 @@ module.exports = {
   name: 'client',
   displayName: 'client',
   preset: 'ts-jest',
-  testEnvironment: "jsdom",
+  testEnvironment: "node",
   roots: [
     "<rootDir>/source/client"
   ],
