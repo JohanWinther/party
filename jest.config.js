@@ -31,8 +31,8 @@ module.exports = {
 
   // Run tests from one or more projects
   projects: [
-    '<rootDir>/jest-client.config.js',
     '<rootDir>/jest-server.config.js',
+    '<rootDir>/jest-client.config.js',
   ],
 
   // Automatically reset mock state between every test
