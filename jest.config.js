@@ -29,10 +29,6 @@ module.exports = {
   // An object that configures minimum threshold enforcement for coverage results
   // coverageThreshold: undefined,
 
-  modulePaths: [
-    '<rootDir>',
-  ],
-
   // Run tests from one or more projects
   projects: [
     '<rootDir>/jest-server.config.js',
