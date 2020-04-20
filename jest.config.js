@@ -31,7 +31,7 @@ module.exports = {
 
   // Run tests from one or more projects
   projects: [
-    '<rootDir>/jest-server.config.js',
+    //'<rootDir>/jest-server.config.js',
     '<rootDir>/jest-client.config.js',
   ],
 
