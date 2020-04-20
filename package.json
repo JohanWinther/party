@@ -37,7 +37,7 @@
     "start": "node .",
     "nodemon": "nodemon . --watch build/development/*",
     "watch": "npm-run-all -p nodemon build:dev-watch",
-    "test": "jest --no-cache"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
