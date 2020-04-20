@@ -11,6 +11,6 @@ test('findGames returns empty string array if game folder is missing', () => {
 test('findGames returns empty string array if games folder is empty', () => {
     fs.existsSync = jest.fn().mockReturnValueOnce(true); // games folder exists
     fs.readdirSync = jest.fn().mockReturnValue([] as Dirent[]); // no entries in games folder
-    
+
     expect(gameHandler.findGames()).toStrictEqual([] as string[]);
 });
