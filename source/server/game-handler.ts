@@ -8,9 +8,11 @@ class Game {
         boolean |
         URL |
         { name: string; link?: URL } |
-        { min: number | null; max: number | null }
+        { min: number | null; max: number | null }  |
+        fs.PathLike
     );
 
+    path: fs.PathLike;
     isValid: boolean;
     title: string;
     description: string;
@@ -43,6 +45,8 @@ class Game {
         } catch (e) {
             return false;
         }
+
+        this.path = path.resolve(path.dirname(gameInfoPath as string));
 
         if (gameData.title && typeof gameData.title === 'string') {
             this['title'] = gameData['title'];
