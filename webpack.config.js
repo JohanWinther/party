@@ -78,7 +78,7 @@ const getClientConfig = env => {
         },
         output: {
             filename: 'bundle.js',
-            path: path.resolve(__dirname, 'build', env.buildFolder, 'client'),
+            path: path.join(__dirname, 'build', env.buildFolder, 'client'),
         },
         plugins: [
             new ForkTsCheckerWebpackPlugin(),
@@ -86,6 +86,10 @@ const getClientConfig = env => {
                 {
                     from: path.join(__dirname, 'source', 'client'),
                     ignore: ['*.ts', 'tsconfig.json'],
+                },
+                {
+                    from: path.join(__dirname, 'source', 'games'),
+                    to: path.join(__dirname, 'build', env.buildFolder, 'games'),
                 },
             ]),
         ]
