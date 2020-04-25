@@ -3,7 +3,7 @@ jest.mock('fs');
 
 import fs from 'fs';
 import path from 'path';
-import GameHandler from '../game-handler';
+import { GameHandler } from '../game-handler';
 
 describe('GameHandler', () => {
 

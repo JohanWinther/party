@@ -1,6 +1,6 @@
-import httpServer from './http-server';
-import GameHandler from './game-handler';
-import SocketLink from './socket-link';
+import { httpServer } from './http-server';
+import { GameHandler } from './game-handler';
+import { SocketLink } from './socket-link';
 
 
 const HTTP_PORT: number = Number(process.env.PORT) || 80;

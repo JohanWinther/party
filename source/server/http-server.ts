@@ -13,4 +13,5 @@ httpServer.use(
     express.static(path.join(__dirname, 'games'))
 );
 
-export = httpServer
+
+export { httpServer };

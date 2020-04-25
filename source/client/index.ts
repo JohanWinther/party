@@ -1,27 +1,5 @@
-import SocketClient from "./socket-client";
-
-interface Game {
-    url: string;
-    isValid: boolean;
-    title: string;
-    description: string;
-    author: {
-        name: string;
-        link?: URL;
-    };
-    version: string;
-    supportLink: URL;
-    numberOfPlayers: {
-        min: number | null;
-        max: number | null;
-    };
-    playTime: {
-        min: number | null;
-        max: number | null;
-    };
-    explicitContent: boolean;
-    audienceSupported: boolean;
-}
+import { SocketClient } from "./socket-client";
+import { GameInterface } from "../server/game-handler";
 
 function main(): void {
 
@@ -30,7 +8,7 @@ function main(): void {
     fetch('/games/')
         .then(res => res.json())
         .then(games => {
-            gamesList.innerHTML = games.map((game: Game) => (`
+            gamesList.innerHTML = games.map((game: GameInterface) => (`
                 <li tabindex="0" title="${escape(game.description)}">
                     <a href="${game.url}" tabindex="-1">${game.title}</a>
                 </li>

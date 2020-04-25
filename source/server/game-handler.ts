@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-class Game {
+interface GameInterface {
 
     [key: string]: (
         string |
@@ -29,6 +29,22 @@ class Game {
         min: number | null;
         max: number | null;
     };
+    explicitContent: boolean;
+    audienceSupported: boolean;
+}
+
+class Game implements GameInterface {
+
+    [key: string]: string | boolean | URL | { name: string; link?: URL } | { min: number; max: number; };
+    url: string;
+    isValid: boolean;
+    title: string;
+    description: string;
+    author: { name: string; link?: URL };
+    version: string;
+    supportLink: URL;
+    numberOfPlayers: { min: number; max: number };
+    playTime: { min: number; max: number };
     explicitContent: boolean;
     audienceSupported: boolean;
 
@@ -61,10 +77,10 @@ class Game {
         }
 
         if (gameData.author &&
-            typeof gameData.author === 'object' && 
+            typeof gameData.author === 'object' &&
             gameData.author.name &&
             typeof gameData.author.name === 'string') {
-            
+
             this.author = {
                 name: gameData.author.name
             }
@@ -72,7 +88,7 @@ class Game {
             if (gameData.author.link && typeof gameData.author.link === 'string') {
                 this.author.link = gameData.author.link;
             }
-            
+
         } else {
             return false;
         }
@@ -89,7 +105,7 @@ class Game {
 
         if (gameData.numberOfPlayers &&
             typeof gameData.numberOfPlayers === 'object') {
-        /* Implement check later */
+            /* Implement check later */
             this.numberOfPlayers = gameData.numberOfPlayers;
         } else {
             return false;
@@ -155,4 +171,4 @@ class GameHandler {
     }
 }
 
-export = GameHandler
+export { GameHandler, GameInterface };

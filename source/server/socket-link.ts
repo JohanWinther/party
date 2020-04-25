@@ -3,7 +3,7 @@ import ws from 'ws';
 interface SocketClients {
     [clientId: string]: ws;
 }
-export default class SocketLink {
+export class SocketLink {
 
     static SCREEN_CLIENT_ID = 0;
     _clients: SocketClients; 
@@ -58,6 +58,7 @@ export default class SocketLink {
             if (!isNaN(clientId) && !this.clientExists(clientId)) {
                 this.addClient(connection, clientId);
             } else {
+                console.log('REJECTING client:', clientId ? clientId : 'SCREEN');
                 connection.send('REJECTED:socket already open in another window');
             }
         }

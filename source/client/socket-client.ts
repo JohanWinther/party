@@ -5,7 +5,7 @@ interface SocketEvent {
     data: object;
 }
 
-export default class SocketClient extends EventTarget {
+export class SocketClient extends EventTarget {
 
     static SCREEN_CLIENT_ID = 0;
 
