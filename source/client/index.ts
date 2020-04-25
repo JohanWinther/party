@@ -31,7 +31,9 @@ function main(): void {
         .then(res => res.json())
         .then(games => {
             gamesList.innerHTML = games.map((game: Game) => (`
-                <li tabindex="0" title="${escape(game.description)}"><a href="${game.url}" tabindex="-1">${game.title}</a></li>
+                <li tabindex="0" title="${escape(game.description)}">
+                    <a href="${game.url}" tabindex="-1">${game.title}</a>
+                </li>
             `));
         });
 
