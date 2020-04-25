@@ -8,11 +8,10 @@ class Game {
         boolean |
         URL |
         { name: string; link?: URL } |
-        { min: number | null; max: number | null }  |
-        fs.PathLike
+        { min: number | null; max: number | null }
     );
 
-    path: fs.PathLike;
+    url: string;
     isValid: boolean;
     title: string;
     description: string;
@@ -46,7 +45,7 @@ class Game {
             return false;
         }
 
-        this.path = path.resolve(path.dirname(gameInfoPath as string));
+        this.url = `/games/${path.basename(path.dirname(gameInfoPath as string))}/`;
 
         if (gameData.title && typeof gameData.title === 'string') {
             this['title'] = gameData['title'];
@@ -66,7 +65,9 @@ class Game {
             gameData.author.name &&
             typeof gameData.author.name === 'string') {
             
-            this.author.name = gameData.author.name;
+            this.author = {
+                name: gameData.author.name
+            }
 
             if (gameData.author.link && typeof gameData.author.link === 'string') {
                 this.author.link = gameData.author.link;
