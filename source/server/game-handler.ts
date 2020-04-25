@@ -18,7 +18,7 @@ class Game {
     author: {
         name: string;
         link?: URL;
-    }
+    };
     version: string;
     supportLink: URL;
     numberOfPlayers: {
