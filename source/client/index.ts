@@ -1,4 +1,4 @@
-console.log("Screen client");
+import SocketClient from "./socket-client";
 
 interface Game {
     url: string;
@@ -37,29 +37,18 @@ function main(): void {
 
 }
 
-function connect(): void {
+const socketClient = new SocketClient();
 
-    console.log('Connecting to websocket..');
-    const ws = new WebSocket(`ws://${location.hostname}:3000`);
+socketClient.addEventListener('player_connected', (event: CustomEvent) => {
+    console.log(event);
+});
 
-    ws.onopen = (): void => {
-        console.log('Connected to websocket');
-        const clientId = (new Date()).getTime()*100 + Math.floor(Math.random()*100);
-        ws.send(clientId.toString());
-        console.log(`Sending ${clientId}`);
-    };
-    ws.onclose = (): void => {
-        setTimeout(() => {
-            connect();
-        }, 2000);
-    };
-    ws.onmessage = (ev): void => {
-        console.log(ev.data);
-    };
+socketClient.addEventListener('unknown', (event: CustomEvent) => {
+    console.log(event);
+});
 
-}
+
 
 document.addEventListener('DOMContentLoaded', () => {
     main()
-    connect();
 });
