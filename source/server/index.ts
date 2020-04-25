@@ -8,7 +8,7 @@ const WEBSOCKET_PORT: number = Number(process.env.WSPORT) || 3000;
 const gameHandler = new GameHandler();
 gameHandler.loadGames(gameHandler.findGames());
 
-httpServer.get('/api/games', (req, res) => {
+httpServer.get('/games/', (req, res) => {
     res.json(gameHandler.games);
 });
 
