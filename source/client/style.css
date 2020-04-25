@@ -10,6 +10,12 @@ body
     opacity: 1;
 }
 
+a
+{
+    text-decoration: none;
+    color: unset;
+}
+
 ol
 {
     list-style: none;
