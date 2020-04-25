@@ -1,112 +1,156 @@
 import { set as setCookie, get as getCookie } from 'es-cookie';
 
+interface SocketEvent {
+    type: string;
+    data: object;
+}
+
 export default class SocketClient extends EventTarget {
 
-    webSocket: WebSocket;
-    clientId: number;
-    type: 'screen' | 'player';
+    static SCREEN_CLIENT_ID = 0;
+
+    _webSocket: WebSocket;
+    _clientId: number;
 
     constructor() {
         super();
 
         if (['localhost', '127.0.0.1', '::1'].includes(location.hostname)) {
-            this.type = 'screen';
-            this.clientId = 0;
+            this.setClientId('screen');
         } else {
-            this.type = 'player';
-            this.setClientId();
+            this.setClientId('player');
         }
 
         this.connect();
     }
 
-    public send(event: { type: string; data: object }): void {
-        if (event && typeof event === 'object' &&
-            event.type && typeof event.type === 'string' &&
-            event.data && typeof event.data === 'object') {
 
-            if (this.webSocket) {
-                this.webSocket.send(JSON.stringify(event));
-            } else {
-                console.log('Buffering message for later...');
-                setTimeout(() => {
-                    console.log('Buffering message for later... trying again.');
-                    this.send(event);
-                }, 1000);
-            }
-
+    public send(event: SocketEvent): void {
+        console.log('Trying to send', event);
+        if (this.webSocket) {
+            this.webSocket.send(this.createMessageFromEvent(event));
+            console.log('Sent', event);
         } else {
-            throw new Error('Event object has wrong format. Must have "type" and "data" keys.');
+            console.log('Not connected to server. Retry in 1 second.');
+            setTimeout(() => {
+                this.send(event);
+            }, 1000);
         }
     }
 
-    private setClientId(): void {
+    private set webSocket(connection: WebSocket | undefined) {
+        if (connection !== undefined) {
+            connection.onmessage = this.onMessage.bind(this);
+            this._webSocket = connection;
+            if (this.isPlayer) {
+                this.send({ type: 'player_connected', data: { clientId: this.clientId } } as SocketEvent);
+            }
+        } else {
+            this.webSocket.close();
+            delete this._webSocket;
+        }
+    }
+
+    private get webSocket(): WebSocket {
+        return this._webSocket;
+    }
+
+    private setClientId(type: 'screen' | 'player'): void {
         const cookieClientId: number = parseInt(getCookie('clientId'));
         if (!isNaN(cookieClientId)) {
-            this.clientId = cookieClientId;
+            this._clientId = cookieClientId;
         } else {
-            this.clientId = (new Date()).getTime() * 100 + Math.floor(Math.random() * 100);
-            setCookie('clientId', this.clientId.toString(), { expires: 1 });
+            if (type === 'screen') {
+                this._clientId = SocketClient.SCREEN_CLIENT_ID;
+            } else if (type === 'player') {
+                this._clientId = (new Date()).getTime() * 100 + Math.floor(Math.random() * 100);
+            }
+            setCookie('clientId', this._clientId.toString(), { expires: 1 });
         }
     }
 
-    connect(): void {
-        console.log('Trying to connect.');
-        const unconnectedWSClient = new WebSocket(`ws://${location.hostname}:3000`);
+    private get clientId(): number {
+        return this._clientId;
+    }
 
-        unconnectedWSClient.onerror = (event): void => {
-            event.preventDefault();
-            console.log('Could not establish connection to websocket.');
+    public get isScreen(): boolean {
+        return (this.clientId === SocketClient.SCREEN_CLIENT_ID);
+    }
 
+    public get isPlayer(): boolean {
+        return (this.clientId !== SocketClient.SCREEN_CLIENT_ID);
+    }
+
+    private connect(): void {
+        const connection = new WebSocket(`ws://${location.hostname}:3000`);
+
+        // Setup simple event handlers until client is accepted
+        connection.onopen = (): void => {
+            console.log('Attempting handshake...');
+            connection.send("ID:" + this.clientId);
         };
+        connection.onmessage = this.waitForServerAck.bind(this, connection);
+        connection.onclose = this.onClose.bind(this);
+    }
 
-        unconnectedWSClient.onclose = (): void => {
-            delete this.webSocket;
-            console.log('Lost connection. Will try again in 1 second...');
+
+    private waitForServerAck(connection: WebSocket, messageEvent: MessageEvent): void {
+        const messageText = messageEvent.data.toString();
+        if (messageText === 'ACCEPTED') {
+            console.log('Accepted by node server.');
+            this.webSocket = connection;
+        } else if (messageText.startsWith('REJECTED:')) {
+            const rejectionReason: string = messageText.split(':')[1];
+            console.log('Rejected by node server:', rejectionReason);
+            // Add later: close with manual code
+            connection.close();
+            alert('Already open in another window!'); // Todo: fix better UI for this state
+        }
+    }
+
+    private onClose(event: CloseEvent): void {
+        if (this.webSocket) {
+            this.webSocket = undefined;
+        }
+
+        // Add later: check that connection is not manually closed with custom code
+        if (event.code !== 1005) {
             setTimeout(() => {
                 this.connect();
             }, 1000);
-        };
+        }
+    }
 
-        unconnectedWSClient.onopen = (): void => {
-            console.log(`Connected as ${this.clientId}`);
-            this.webSocket = unconnectedWSClient;
+    private onMessage(messageEvent: MessageEvent): void {
+        const messageText = messageEvent.data.toString();
+        const socketEvent = this.createEventFromMessage(messageText);
+        const emitEvent = new CustomEvent(socketEvent.type, { detail: socketEvent.data });
+        this.dispatchEvent(emitEvent);
+    }
 
-            if (this.type === 'player') {
-                const event = {
-                    type: "player_connected",
-                    data: {
-                        clientId: this.clientId
-                    }
-                };
-                this.webSocket.send(JSON.stringify(event));
+    private createMessageFromEvent(event: SocketEvent): string {
+        return JSON.stringify(event);
+    }
+
+    private createEventFromMessage(message: string): SocketEvent {
+        let event: SocketEvent;
+        try {
+            event = JSON.parse(message);
+            if (event && typeof event === 'object' &&
+                event.type && typeof event.type === 'string' &&
+                event.data && typeof event.data === 'object') {
+                return event;
+            } else {
+                throw new Error('Malformed event message.');
             }
-
-
-            this.webSocket.onmessage = (messageEvent: MessageEvent): void => {
-                console.log('Received message:', messageEvent.data.toString());
-                let event;
-                try {
-                    event = JSON.parse(messageEvent.data.toString());
-                } catch (e) {
-                    event = {
-                        type: "unknown",
-                        data: {
-                            message: messageEvent.data.toString(),
-                        }
-                    };
-                }
-
-                if (event && typeof event === 'object' &&
-                    event.type && typeof event.type === 'string' &&
-                    event.data && typeof event.data === 'object') {
-                    this.dispatchEvent(
-                        new CustomEvent(event.type,
-                            { detail: event.data }
-                        )
-                    );
+        } catch (e) {
+            event = {
+                type: "unknown",
+                data: {
+                    message: message,
                 }
             };
-        };
+            return event;
+        }
     }
 }

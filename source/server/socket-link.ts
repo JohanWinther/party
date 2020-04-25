@@ -1,73 +1,102 @@
 import ws from 'ws';
 
-class SocketLink {
+interface SocketClients {
+    [clientId: string]: ws;
+}
+export default class SocketLink {
 
-    websocketServer: ws.Server;
-    screenClient: ws;
-    playerClients: {
-        [clientId: number]: ws;
-    };
+    static SCREEN_CLIENT_ID = 0;
+    _clients: SocketClients; 
 
     constructor(port: number) {
-        this.playerClients = {};
+        this.resetClients();
+        const webSocketServer = new ws.Server({ port: port });
+        webSocketServer.on('connection', this.connect.bind(this));
+    }
 
-        this.websocketServer = new ws.Server({ port: port });
-        this.websocketServer.on('connection', (connection, req) => {
-            const hostname = req.connection.remoteAddress;
-            if (['localhost', '127.0.0.1', '::1'].includes(hostname)) {
+    private get clients(): SocketClients {
+        return this._clients;
+    }
 
-                // Screen client
-                console.log("Screen connected.");
-                this.screenClient = connection;
+    private getClient(clientId: number): ws {
+        return this.clients[clientId.toString()];
+    }
 
-                
-                this.screenClient.onmessage = (event): void => {
+    private clientExists(clientId: number): boolean {
+        return ( this.getClient(clientId) !== undefined );
+    }
 
-                    // Send event to all player clients
-                    for (const clientId in this.playerClients) {
-                        this.playerClients[clientId].send(event.data);
-                    }
+    private resetClients(): void {
+        for (const id in this.clients) {
+            this.removeClient(parseInt(id));
+        }
+        this._clients = {};
+    }
 
-                };
+    private addClient(connection: ws, clientId: number): void {
+        console.log('ACCEPTING client:', clientId ? clientId : 'SCREEN');
+        connection.onmessage = this.onMessage.bind(this, clientId);
+        connection.onclose = this.onClose.bind(this, clientId);
+        connection.send('ACCEPTED');
+        this._clients[clientId.toString()] = connection;
+    }
+
+    private removeClient(clientId: number): void {
+        this.getClient(clientId).close();
+        delete this._clients[clientId.toString()];
+    }
+
+    private connect(connection: ws): void {
+        console.log("Client connected. Waiting for identification.");
+        connection.onmessage = this.sendAckUponClientId.bind(this, connection);
+    }
+
+    private sendAckUponClientId(connection: ws, message: MessageEvent): void {
+        const messageText = message.data.toString();
+        if (messageText.startsWith('ID:')) {
+            const clientId = parseInt(messageText.split(':')[1]);
+            if (!isNaN(clientId) && !this.clientExists(clientId)) {
+                this.addClient(connection, clientId);
             } else {
-                console.log("Unknown player connected.");
-                // Player client
-                connection.send('Please identify yourself.');
-
-                connection.onmessage = (messageEvent): void => {
-
-                    // Send event to screen client
-                    if (this.screenClient) {
-                        this.screenClient.send(messageEvent.data);
-                    }
-
-                    /* Add player to instance if player_connected event is received */
-                    const event = JSON.parse(messageEvent.data.toString());
-                    if (event && typeof event === 'object' &&
-                        event.type && typeof event.type === 'string' &&
-                        event.data && typeof event.data === 'object') {
-                        
-                        if (event.type === 'player_connected' &&
-                            event.data.clientId && typeof event.data.clientId === 'number') {
-                            const clientId = event.data.clientId;
-                            this.playerClients[clientId] = connection;
-                            console.log(`Client ${clientId} identified!`);
-                        }
-                    }
-                };
+                connection.send('REJECTED:socket already open in another window');
             }
-        });
+        }
+    }
 
-        // Ping
-        setInterval(() => {
-            for (const a in this.playerClients) {
-                this.playerClients[a].send(JSON.stringify({
-                    type: "ping",
-                    data: {},
-                }));
+    private onClose(clientId: number): void {
+        this.removeClient(clientId);
+    }
+
+    private onMessage(clientId: number, message: MessageEvent): void {
+        if (clientId === SocketLink.SCREEN_CLIENT_ID) {
+            // If message from screen
+            // Forward to all player clients
+            for (const idString in this.clients) {
+                const id = parseInt(idString);
+                if (this.isPlayer(id)) {
+                    this.clients[idString].send(message.data);
+                }
             }
-        }, 5000);
+        } else {
+            // If message from player
+            // Send to screen client
+            if (this.clientExists(SocketLink.SCREEN_CLIENT_ID)) {
+                this.getClient(SocketLink.SCREEN_CLIENT_ID).send(message.data);
+            }
+        }
+    }
+
+    public isScreen(clientId: number): boolean {
+        return (
+            this.clientExists(clientId) &&
+            clientId === SocketLink.SCREEN_CLIENT_ID
+        );
+    }
+
+    public isPlayer(clientId: number): boolean {
+        return (
+            this.clientExists(clientId) &&
+            clientId !== SocketLink.SCREEN_CLIENT_ID
+        );
     }
 }
-
-export = SocketLink;
