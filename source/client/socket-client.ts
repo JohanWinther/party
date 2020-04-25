@@ -1,6 +1,6 @@
 import { set as setCookie, get as getCookie } from 'es-cookie';
 
-interface SocketEvent {
+export interface SocketEvent {
     type: string;
     data: object;
 }
