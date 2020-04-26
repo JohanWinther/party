@@ -42,6 +42,10 @@ export class SocketClient extends EventTarget {
         if (connection !== undefined) {
             connection.onmessage = this.onMessage.bind(this);
             this._webSocket = connection;
+            this.dispatchEvent(new CustomEvent(
+                'self_connected',
+                { detail: {} }
+            ));
             if (this.isPlayer) {
                 this.send({ type: 'player_connected', data: { clientId: this.clientId } } as SocketEvent);
             }
