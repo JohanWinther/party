@@ -27,8 +27,4 @@ socketClient.addEventListener('unknown', (event: CustomEvent) => {
     console.log(event);
 });
 
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    main()
-});
+main();
