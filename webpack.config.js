@@ -49,10 +49,7 @@ const getServerConfig = env => {
 const getClientConfig = env => {
     return {
         target: "web",
-        entry: {
-            bundle: './source/client/index.ts',
-            "socket-client": './source/client/socket-client.ts',
-        },
+        entry: './source/client/index.ts',
         mode: env.NODE_ENV,
         devtool: env.devtool,
         module: {
@@ -80,7 +77,7 @@ const getClientConfig = env => {
             extensions: ['.tsx', '.ts', '.js'],
         },
         output: {
-            filename: '[name].js',
+            filename: 'bundle.js',
             path: path.join(__dirname, 'build', env.buildFolder, 'client'),
         },
         externals: {
