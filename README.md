@@ -1,6 +1,6 @@
-<h3 style="text-align:center">Party (working title)</h3>
+<h3 align="center">Party (working title)</h3>
 
-<p style="text-align:center">
+<p align="center">
   This project aims to be a free and open source platform for local multiplayer party games.
   <br>
   <a href="https://johanwinther.github.io/party"><strong>Visit official page »</strong></a>
